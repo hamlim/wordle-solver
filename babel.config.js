@@ -13,7 +13,7 @@ module.exports = function (api) {
     ]
   }
   return {
-    presets: [cfg, '@babel/preset-react'],
+    presets: ['next/babel', cfg, '@babel/preset-react'],
     plugins: [
       [
         '@babel/plugin-transform-typescript',
