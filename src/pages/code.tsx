@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
+import words from '../lib/words'
 import {
   Box,
   Text,
   Heading,
-  Input,
-  InlineCode,
+  Textarea,
   Button,
   List,
   ListItem,
@@ -12,44 +12,19 @@ import {
   Stack,
 } from '@ds-pack/components'
 import Link from '../components/Link'
-import words from '../lib/words'
 
-let template = `
-// list === word[]
-// included === character[]
-// excluded === character[]
-// patterns === [character, position][]
-
-return list.filter(word => {
-  return included.every(char => word.includes(char)) && excluded.every(char => !word.includes(char)) && patterns.every(pat => word[pat[1]] === pat[0])
-})
-`
-
-function VisualSolver() {
-  let [included, setIncluded] = useState('')
-  let [excluded, setExcluded] = useState('')
-  let [patterns, setPatterns] = useState('')
+function Editor() {
+  let [code, setCode] = useState(
+    `// \`list\` is an array of words that are valid!
+return list.filter(word => word.startsWith('a'));`,
+  )
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
 
   function run() {
     try {
-      let func = new Function(
-        'list',
-        'included',
-        'excluded',
-        'patterns',
-        template,
-      )
-      let res = func(
-        words,
-        included.split(' ').filter(Boolean),
-        excluded.split(' ').filter(Boolean),
-        patterns
-          .split(' ')
-          .filter(Boolean)
-          .map((pat) => pat.split(',')),
-      )
+      let func = new Function('list', code)
+      let res = func(words)
       setMatch(res)
     } catch (e) {
       setError(e)
@@ -80,25 +55,15 @@ function VisualSolver() {
           </List>
         </>
       ) : null}
-      <Input value={included} onChange={setIncluded}>
-        Included: (in a space separated list)
-      </Input>
-      <Input value={excluded} onChange={setExcluded}>
-        Excluded: (in a space separated list)
-      </Input>
-      <Input value={patterns} onChange={setPatterns}>
-        <Box is="span">
-          Positions: (in the format of{' '}
-          <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
-          0-indexed)
-        </Box>
-      </Input>
+      <Textarea minHeight={500} value={code} onChange={setCode}>
+        Code:
+      </Textarea>
       <Button onClick={run}>Run</Button>
     </Stack>
   )
 }
 
-export default function App() {
+export default function Code() {
   return (
     <Box display="grid" gridTemplateRows="auto 2fr auto" flexGrow={1}>
       <Box is="header">
@@ -107,12 +72,12 @@ export default function App() {
         </Heading>
       </Box>
       <Box is="main">
-        <VisualSolver />
+        <Editor />
       </Box>
       <Box is="footer" py="$8">
         <Link href="/template">Simplified Solver</Link>
         <Box pr="$4" display="inline-block" />
-        <Link href="/code">Code</Link>
+        <Link href="/">Visual Solver</Link>
         <Box pr="$4" display="inline-block" />
         <Link href="/about">About</Link>
       </Box>

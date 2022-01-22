@@ -14,42 +14,28 @@ import {
 import Link from '../components/Link'
 import words from '../lib/words'
 
-let template = `
+let solverFunction = `
 // list === word[]
-// included === character[]
+// template === string
 // excluded === character[]
-// patterns === [character, position][]
+
+let patterns = template.split('').map((char, idx) => [char !== '_' ? char : undefined, idx]).filter(pat => pat[0]);
 
 return list.filter(word => {
-  return included.every(char => word.includes(char)) && excluded.every(char => !word.includes(char)) && patterns.every(pat => word[pat[1]] === pat[0])
+  return excluded.every(char => !word.includes(char)) && patterns.every(pat => word[pat[1]] === pat[0])
 })
 `
 
-function VisualSolver() {
-  let [included, setIncluded] = useState('')
+function TemplateSolver() {
+  let [template, setTemplate] = useState('_____')
   let [excluded, setExcluded] = useState('')
-  let [patterns, setPatterns] = useState('')
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
 
   function run() {
     try {
-      let func = new Function(
-        'list',
-        'included',
-        'excluded',
-        'patterns',
-        template,
-      )
-      let res = func(
-        words,
-        included.split(' ').filter(Boolean),
-        excluded.split(' ').filter(Boolean),
-        patterns
-          .split(' ')
-          .filter(Boolean)
-          .map((pat) => pat.split(',')),
-      )
+      let func = new Function('list', 'template', 'excluded', solverFunction)
+      let res = func(words, template, excluded.split(' ').filter(Boolean))
       setMatch(res)
     } catch (e) {
       setError(e)
@@ -80,18 +66,26 @@ function VisualSolver() {
           </List>
         </>
       ) : null}
-      <Input value={included} onChange={setIncluded}>
-        Included: (in a space separated list)
-      </Input>
+      <Box display="flex" alignItems="flex-end">
+        <Input
+          value={template}
+          onChange={setTemplate}
+          inputProps={{
+            maxLength: 5,
+          }}
+          flexGrow={1}
+        >
+          <Box is="span">
+            Template, use <InlineCode>_</InlineCode> (underscores) as
+            placeholders:
+          </Box>
+        </Input>
+        <Button ml="$4" onClick={() => setTemplate('_____')} variant="ghost">
+          Reset
+        </Button>
+      </Box>
       <Input value={excluded} onChange={setExcluded}>
         Excluded: (in a space separated list)
-      </Input>
-      <Input value={patterns} onChange={setPatterns}>
-        <Box is="span">
-          Positions: (in the format of{' '}
-          <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
-          0-indexed)
-        </Box>
       </Input>
       <Button onClick={run}>Run</Button>
     </Stack>
@@ -107,10 +101,10 @@ export default function App() {
         </Heading>
       </Box>
       <Box is="main">
-        <VisualSolver />
+        <TemplateSolver />
       </Box>
       <Box is="footer" py="$8">
-        <Link href="/template">Simplified Solver</Link>
+        <Link href="/">Visual Solver</Link>
         <Box pr="$4" display="inline-block" />
         <Link href="/code">Code</Link>
         <Box pr="$4" display="inline-block" />
