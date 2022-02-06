@@ -19,9 +19,15 @@ let template = `
 // included === character[]
 // excluded === character[]
 // patterns === [character, position][]
+// excludedPatterns === [character, position][]
 
 return list.filter(word => {
-  return included.every(char => word.includes(char)) && excluded.every(char => !word.includes(char)) && patterns.every(pat => word[pat[1]] === pat[0])
+  return (
+    included.every(char => word.includes(char)) &&
+    excluded.every(char => !word.includes(char)) &&
+    patterns.every(pat => word[pat[1]] === pat[0]) &&
+    excludedPatterns.every(pat => word[pat[1]] !== pat[0])
+  )
 })
 `
 
@@ -29,6 +35,7 @@ function VisualSolver() {
   let [included, setIncluded] = useState('')
   let [excluded, setExcluded] = useState('')
   let [patterns, setPatterns] = useState('')
+  let [excludedPatterns, setExcludedPatterns] = useState('')
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
 
@@ -39,6 +46,7 @@ function VisualSolver() {
         'included',
         'excluded',
         'patterns',
+        'excludedPatterns',
         template,
       )
       let res = func(
@@ -46,6 +54,10 @@ function VisualSolver() {
         included.split(' ').filter(Boolean),
         excluded.split(' ').filter(Boolean),
         patterns
+          .split(' ')
+          .filter(Boolean)
+          .map((pat) => pat.split(',')),
+        excludedPatterns
           .split(' ')
           .filter(Boolean)
           .map((pat) => pat.split(',')),
@@ -89,6 +101,14 @@ function VisualSolver() {
       <Input value={patterns} onChange={setPatterns}>
         <Box is="span">
           Positions: (in the format of{' '}
+          <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
+          0-indexed)
+        </Box>
+      </Input>
+      <Input value={excludedPatterns} onChange={setExcludedPatterns}>
+        <Box is="span">
+          Excluded Positions - e.g. characters in the word but in the wrong
+          place: (in the format of{' '}
           <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
           0-indexed)
         </Box>
