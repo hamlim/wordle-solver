@@ -75,9 +75,11 @@ export default function Code() {
         <Editor />
       </Box>
       <Box is="footer" py="$8">
-        <Link href="/template">Simplified Solver</Link>
+        <Link href="/visual">Visual Solver</Link>
         <Box pr="$4" display="inline-block" />
-        <Link href="/">Visual Solver</Link>
+        <Link href="/">Basic Solver</Link>
+        <Box pr="$4" display="inline-block" />
+        <Link href="/template">Simplified Solver</Link>
         <Box pr="$4" display="inline-block" />
         <Link href="/about">About</Link>
       </Box>

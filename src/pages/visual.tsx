@@ -40,7 +40,7 @@ return list.filter(word => {
 })
 `
 
-function BasicSolver() {
+function VisualSolver() {
   let [firstCharacter, setFirstCharacter] = useState('')
   let [secondCharacter, setSecondCharacter] = useState('')
   let [thirdCharacter, setThirdCharacter] = useState('')
@@ -190,10 +190,10 @@ export default function App() {
         </Heading>
       </Box>
       <Box is="main">
-        <BasicSolver />
+        <VisualSolver />
       </Box>
       <Box is="footer" py="$8">
-        <Link href="/visual">Visual Solver</Link>
+        <Link href="/">Basic Solver</Link>
         <Box pr="$4" display="inline-block" />
         <Link href="/template">Simplified Solver</Link>
         <Box pr="$4" display="inline-block" />

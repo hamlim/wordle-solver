@@ -104,7 +104,9 @@ export default function App() {
         <TemplateSolver />
       </Box>
       <Box is="footer" py="$8">
-        <Link href="/">Visual Solver</Link>
+        <Link href="/visual">Visual Solver</Link>
+        <Box pr="$4" display="inline-block" />
+        <Link href="/">Basic Solver</Link>
         <Box pr="$4" display="inline-block" />
         <Link href="/code">Code</Link>
         <Box pr="$4" display="inline-block" />
