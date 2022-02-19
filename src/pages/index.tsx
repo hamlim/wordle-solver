@@ -10,31 +10,44 @@ import {
   ListItem,
   Banner,
   Stack,
+  VisuallyHidden,
 } from '@ds-pack/components'
 import Link from '../components/Link'
 import words from '../lib/words'
 
 let template = `
 // list === word[]
-// included === character[]
+// first === character
+// second === character
+// third === character
+// fourth === character
+// fifth === character
 // excluded === character[]
-// patterns === [character, position][]
+// included === character[]
 // excludedPatterns === [character, position][]
 
 return list.filter(word => {
   return (
-    included.every(char => word.includes(char)) &&
+    (first && first === word[0]) &&
+    (second && second === word[1]) &&
+    (third && third === word[2]) &&
+    (fourth && fourth === word[3]) &&
+    (fifth && fifth === word[4]) &&
     excluded.every(char => !word.includes(char)) &&
-    patterns.every(pat => word[pat[1]] === pat[0]) &&
+    included.every(pat => word.includes(char)) &&
     excludedPatterns.every(pat => word[pat[1]] !== pat[0])
   )
 })
 `
 
 function VisualSolver() {
-  let [included, setIncluded] = useState('')
+  let [firstCharacter, setFirstCharacter] = useState('')
+  let [secondCharacter, setSecondCharacter] = useState('')
+  let [thirdCharacter, setThirdCharacter] = useState('')
+  let [fourthCharacter, setFourthCharacter] = useState('')
+  let [fifthCharacter, setFifthCharacter] = useState('')
   let [excluded, setExcluded] = useState('')
-  let [patterns, setPatterns] = useState('')
+  let [included, setIncluded] = useState('')
   let [excludedPatterns, setExcludedPatterns] = useState('')
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
@@ -43,20 +56,25 @@ function VisualSolver() {
     try {
       let func = new Function(
         'list',
-        'included',
+        'first',
+        'second',
+        'third',
+        'fourth',
+        'fifth',
         'excluded',
-        'patterns',
+        'included',
         'excludedPatterns',
         template,
       )
       let res = func(
         words,
-        included.split(' ').filter(Boolean),
+        firstCharacter,
+        secondCharacter,
+        thirdCharacter,
+        fourthCharacter,
+        fifthCharacter,
         excluded.split(' ').filter(Boolean),
-        patterns
-          .split(' ')
-          .filter(Boolean)
-          .map((pat) => pat.split(',')),
+        included.split(' ').filter(Boolean),
         excludedPatterns
           .split(' ')
           .filter(Boolean)
@@ -95,13 +113,44 @@ function VisualSolver() {
           </List>
         </>
       ) : null}
-      <Input
-        value={included}
-        onChange={setIncluded}
-        inputProps={{ autoCapitalize: 'off' }}
-      >
-        Included: (in a space separated list)
-      </Input>
+      <Box>Locked in Characters:</Box>
+      <Stack gap="$4" inline>
+        <Input
+          value={firstCharacter}
+          onChange={setFirstCharacter}
+          inputProps={{ autoCapitalize: 'off' }}
+        >
+          <VisuallyHidden>First Character:</VisuallyHidden>
+        </Input>
+        <Input
+          value={secondCharacter}
+          onChange={setSecondCharacter}
+          inputProps={{ autoCapitalize: 'off' }}
+        >
+          <VisuallyHidden>Second Character:</VisuallyHidden>
+        </Input>
+        <Input
+          value={thirdCharacter}
+          onChange={setThirdCharacter}
+          inputProps={{ autoCapitalize: 'off' }}
+        >
+          <VisuallyHidden>Third Character:</VisuallyHidden>
+        </Input>
+        <Input
+          value={fourthCharacter}
+          onChange={setFourthCharacter}
+          inputProps={{ autoCapitalize: 'off' }}
+        >
+          <VisuallyHidden>Fourth Character:</VisuallyHidden>
+        </Input>
+        <Input
+          value={fifthCharacter}
+          onChange={setFifthCharacter}
+          inputProps={{ autoCapitalize: 'off' }}
+        >
+          <VisuallyHidden>Fifth Character:</VisuallyHidden>
+        </Input>
+      </Stack>
       <Input
         value={excluded}
         onChange={setExcluded}
@@ -110,15 +159,11 @@ function VisualSolver() {
         Excluded: (in a space separated list)
       </Input>
       <Input
-        value={patterns}
-        onChange={setPatterns}
+        value={included}
+        onChange={setIncluded}
         inputProps={{ autoCapitalize: 'off' }}
       >
-        <Box is="span">
-          Positions: (in the format of{' '}
-          <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
-          0-indexed)
-        </Box>
+        <Box is="span">Included characters (yellow and green characters):</Box>
       </Input>
       <Input
         value={excludedPatterns}
@@ -126,10 +171,9 @@ function VisualSolver() {
         inputProps={{ autoCapitalize: 'off' }}
       >
         <Box is="span">
-          Excluded Positions - e.g. characters in the word but in the wrong
-          place: (in the format of{' '}
+          Positions of yellow characters (in the format of{' '}
           <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
-          0-indexed)
+          0-indexed):
         </Box>
       </Input>
       <Button onClick={run}>Run</Button>
