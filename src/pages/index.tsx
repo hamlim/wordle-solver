@@ -62,6 +62,9 @@ function VisualSolver() {
           .filter(Boolean)
           .map((pat) => pat.split(',')),
       )
+      if (res.length === 0) {
+        setError('Error')
+      }
       setMatch(res)
     } catch (e) {
       setError(e)
@@ -72,7 +75,7 @@ function VisualSolver() {
       {err ? (
         <Banner variant="error">
           An error occured, check your code!{' '}
-          <Button variant="text" onClick={() => setError(null)}>
+          <Button ml={10} variant="text" onClick={() => setError(null)}>
             Clear
           </Button>
         </Banner>
@@ -82,7 +85,7 @@ function VisualSolver() {
           <Box display="flex" justifyContent="space-between">
             <Text fontWeight="bold">Matched:</Text>
             <Button variant="text" onClick={() => setMatch(null)}>
-              Clear
+              Clear Suggestions
             </Button>
           </Box>
           <List variant="ul">
@@ -92,20 +95,36 @@ function VisualSolver() {
           </List>
         </>
       ) : null}
-      <Input value={included} onChange={setIncluded}>
+      <Input
+        value={included}
+        onChange={setIncluded}
+        inputProps={{ autoCapitalize: 'off' }}
+      >
         Included: (in a space separated list)
       </Input>
-      <Input value={excluded} onChange={setExcluded}>
+      <Input
+        value={excluded}
+        onChange={setExcluded}
+        inputProps={{ autoCapitalize: 'off' }}
+      >
         Excluded: (in a space separated list)
       </Input>
-      <Input value={patterns} onChange={setPatterns}>
+      <Input
+        value={patterns}
+        onChange={setPatterns}
+        inputProps={{ autoCapitalize: 'off' }}
+      >
         <Box is="span">
           Positions: (in the format of{' '}
           <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
           0-indexed)
         </Box>
       </Input>
-      <Input value={excludedPatterns} onChange={setExcludedPatterns}>
+      <Input
+        value={excludedPatterns}
+        onChange={setExcludedPatterns}
+        inputProps={{ autoCapitalize: 'off' }}
+      >
         <Box is="span">
           Excluded Positions - e.g. characters in the word but in the wrong
           place: (in the format of{' '}
