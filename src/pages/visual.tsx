@@ -23,18 +23,16 @@ let template = `
 // fourth === character
 // fifth === character
 // excluded === character[]
-// included === character[]
 // excludedPatterns === [character, position][]
 
 return list.filter(word => {
   return (
-    (first && first === word[0]) &&
-    (second && second === word[1]) &&
-    (third && third === word[2]) &&
-    (fourth && fourth === word[3]) &&
-    (fifth && fifth === word[4]) &&
+    (first ? first === word[0] : true) &&
+    (second ? second === word[1] : true) &&
+    (third ? third === word[2] : true) &&
+    (fourth ? fourth === word[3] : true) &&
+    (fifth ? fifth === word[4] : true) &&
     excluded.every(char => !word.includes(char)) &&
-    included.every(pat => word.includes(char)) &&
     excludedPatterns.every(pat => word[pat[1]] !== pat[0])
   )
 })
@@ -47,7 +45,6 @@ function VisualSolver() {
   let [fourthCharacter, setFourthCharacter] = useState('')
   let [fifthCharacter, setFifthCharacter] = useState('')
   let [excluded, setExcluded] = useState('')
-  let [included, setIncluded] = useState('')
   let [excludedPatterns, setExcludedPatterns] = useState('')
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
@@ -62,7 +59,6 @@ function VisualSolver() {
         'fourth',
         'fifth',
         'excluded',
-        'included',
         'excludedPatterns',
         template,
       )
@@ -74,14 +70,14 @@ function VisualSolver() {
         fourthCharacter,
         fifthCharacter,
         excluded.split(' ').filter(Boolean),
-        included.split(' ').filter(Boolean),
         excludedPatterns
           .split(' ')
           .filter(Boolean)
           .map((pat) => pat.split(',')),
       )
       if (res.length === 0) {
-        setError('Error')
+        setError(new Error('No words found matching criteria!'))
+        return
       }
       setMatch(res)
     } catch (e) {
@@ -92,7 +88,10 @@ function VisualSolver() {
     <Stack gap="$4">
       {err ? (
         <Banner variant="error">
-          An error occured, check your code!{' '}
+          An error occured!
+          <Box ml={10} is="pre">
+            "{err.message}"
+          </Box>
           <Button ml={10} variant="text" onClick={() => setError(null)}>
             Clear
           </Button>
@@ -157,13 +156,6 @@ function VisualSolver() {
         inputProps={{ autoCapitalize: 'off' }}
       >
         Excluded: (in a space separated list)
-      </Input>
-      <Input
-        value={included}
-        onChange={setIncluded}
-        inputProps={{ autoCapitalize: 'off' }}
-      >
-        <Box is="span">Included characters (yellow and green characters):</Box>
       </Input>
       <Input
         value={excludedPatterns}
