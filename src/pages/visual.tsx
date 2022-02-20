@@ -30,15 +30,14 @@ let includedChars = rows.reduce((acc, row) => [...acc, ...row.filter(Boolean)], 
 
 return list.filter(word => {
   return (
-    (first ? first === word[0] : true) &&
-    (second ? second === word[1] : true) &&
-    (third ? third === word[2] : true) &&
-    (fourth ? fourth === word[3] : true) &&
-    (fifth ? fifth === word[4] : true) &&
-    rows.every(row => row.every((char, idx) => word[idx] !== char)) &&
-    includedChars.every(char => word.includes(char)) &&
-    excluded.every(char => !word.includes(char))
-    // && excludedPatterns.every(pat => word[pat[1]] !== pat[0])
+    (first ? first.toLowerCase() === word[0] : true) &&
+    (second ? second.toLowerCase() === word[1] : true) &&
+    (third ? third.toLowerCase() === word[2] : true) &&
+    (fourth ? fourth.toLowerCase() === word[3] : true) &&
+    (fifth ? fifth.toLowerCase() === word[4] : true) &&
+    rows.every(row => row.every((char, idx) => word[idx] !== char.toLowerCase())) &&
+    includedChars.every(char => word.includes(char.toLowerCase())) &&
+    excluded.every(char => !word.includes(char.toLowerCase()))
   )
 })
 `
@@ -102,7 +101,6 @@ function VisualSolver() {
   let [fourthCharacter, setFourthCharacter] = useState('')
   let [fifthCharacter, setFifthCharacter] = useState('')
   let [excluded, setExcluded] = useState('')
-  // let [excludedPatterns, setExcludedPatterns] = useState('')
   let [err, setError] = useState(null)
   let [matched, setMatch] = useState(null)
 
@@ -125,7 +123,6 @@ function VisualSolver() {
         'fifth',
         'rows',
         'excluded',
-        // 'excludedPatterns',
         template,
       )
       let res = func(
@@ -137,10 +134,6 @@ function VisualSolver() {
         fifthCharacter,
         rows,
         excluded.split(' ').filter(Boolean),
-        // excludedPatterns
-        //   .split(' ')
-        //   .filter(Boolean)
-        //   .map((pat) => pat.split(',')),
       )
       if (res.length === 0) {
         setError(new Error('No words found matching criteria!'))
@@ -217,6 +210,7 @@ function VisualSolver() {
           <VisuallyHidden>Fifth Character:</VisuallyHidden>
         </Input>
       </Stack>
+      <Box>Yellow Characters:</Box>
       {rows.map((row, rowIdx) => (
         <Row row={row} key={rowIdx} rowNum={rowIdx} dispatch={dispatch} />
       ))}
@@ -225,19 +219,8 @@ function VisualSolver() {
         onChange={setExcluded}
         inputProps={{ autoCapitalize: 'off' }}
       >
-        Excluded: (in a space separated list)
+        Excluded (gray characters): (in a space separated list)
       </Input>
-      {/* <Input
-        value={excludedPatterns}
-        onChange={setExcludedPatterns}
-        inputProps={{ autoCapitalize: 'off' }}
-      >
-        <Box is="span">
-          Positions of yellow characters (in the format of{' '}
-          <InlineCode display="inline-flex">a,3 b,2</InlineCode>, position is
-          0-indexed):
-        </Box>
-      </Input> */}
       <Button onClick={run}>Run</Button>
     </Stack>
   )
