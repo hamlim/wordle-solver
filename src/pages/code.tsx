@@ -67,7 +67,7 @@ export default function Code() {
   return (
     <Box display="grid" gridTemplateRows="auto 2fr auto" flexGrow={1}>
       <Box is="header">
-        <Heading is="h1" variant="h1" textAlign="center">
+        <Heading is="h1" variant="h2" textAlign="center">
           Wordle Solver
         </Heading>
       </Box>

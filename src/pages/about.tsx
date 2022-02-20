@@ -13,7 +13,7 @@ export default function App() {
       }}
       margin="0 auto"
     >
-      <Heading is="h1" variant="h1" textAlign="center">
+      <Heading is="h1" variant="h2" textAlign="center">
         About Wordle Solver:
       </Heading>
       <Text>
